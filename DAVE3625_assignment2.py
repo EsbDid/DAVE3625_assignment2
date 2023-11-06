@@ -1,18 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# ## TESLA stock prediciton
-# 
-# We have picked the case "Predict stock market price for TESLA". We have chosen linear regression as prediction algorithm for this task, because we are processing continous and real value data as integer quantities (in this case stock prices). The goal of this task is to predict a continous variable over time, analyzing a dataset of stock prices from past and present year. 
-
-# In[3]:
-
-
 import pandas as pd
 import numpy as np
 import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error 
 
 
 data = pd.read_csv('/Users/esbendidriksen/Downloads/TSLA.csv')
@@ -50,25 +41,31 @@ while (flag):
         
     except ValueError:
         print("\nEnter a valid date format(YYYY-MM-DD).")
-        
-        
 
+
+        
+        
 input_date_datetime = input_date.timestamp()
 
 
 predicted_price = model.predict([[input_date_datetime]])
 
+MSE = mean_squared_error(y_test, model.predict(X_test.reshape(-1, 1)))
+
 latest_date = data['Date'].max()
 
 latest_price = data[data['Date'] == latest_date]['Close'].values[0]
 
+
 percentage_score = (latest_price/predicted_price)*100
+
 
 predicted_price_wsqb = str(predicted_price)[1:-1]
 
 percentage_score_wsqb = str(percentage_score)[1:-1]
 
-print(f"\nThe predicted price for a stock in TESLA Motors on {input_date_prompt} is ${predicted_price_wsqb:}")
-print("\nPrediction percentage score: ", percentage_score_wsqb,"%")
 
+print(f"\nThe predicted price for a stock in TESLA Motors on {input_date_prompt} is ${predicted_price_wsqb:}")
+print("\nPrediction percentage score:", percentage_score_wsqb,"%")
+print("\nThe mean squared error:",MSE)
 
